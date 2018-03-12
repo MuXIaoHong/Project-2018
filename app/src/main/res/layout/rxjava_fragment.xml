@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_rxjava_acticity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+   >
+
+    <TextView
+        android:id="@+id/create"
+        style="@style/style_normal"
+        android:text="create"></TextView>
+
+    <TextView
+        android:id="@+id/defer"
+        style="@style/style_normal"
+        android:text="defer"></TextView>
+
+    <TextView
+        android:id="@+id/form"
+        style="@style/style_normal"
+        android:text="form"></TextView>
+
+    <TextView
+        android:id="@+id/interval"
+        style="@style/style_normal"
+        android:text="interval"></TextView>
+
+    <TextView
+        android:id="@+id/range"
+        style="@style/style_normal"
+        android:text="range"></TextView>
+
+    <TextView
+        android:id="@+id/map"
+        style="@style/style_normal"
+        android:text="map"></TextView>
+
+    <TextView
+        android:id="@+id/flatMap"
+        style="@style/style_normal"
+        android:text="flatMap"></TextView>
+
+    <TextView
+        android:id="@+id/groupBy"
+        style="@style/style_normal"
+        android:text="groupBy"></TextView>
+
+    <TextView
+        android:id="@+id/threadTest"
+        style="@style/style_normal"
+        android:text="threadTest"></TextView>
+    <TextView
+        android:id="@+id/filter"
+        style="@style/style_normal"
+        android:text="filter"></TextView>
+    <TextView
+        android:id="@+id/zip"
+        style="@style/style_normal"
+        android:text="zip"></TextView>
+</LinearLayout>

@@ -26,6 +26,7 @@ import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by zhouyanan on 2018/2/9.
+ * 相册相机调用
  */
 
 public class PictureFragment extends BaseFragment {

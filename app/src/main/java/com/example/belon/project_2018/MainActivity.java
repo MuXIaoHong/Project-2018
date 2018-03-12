@@ -39,13 +39,14 @@ public class MainActivity extends AppActivity {
         tabLayout.setupWithViewPager(viewpager);
     }
 
+
     private void initData() {
         fragmentList.add(PictureFragment.newInstance());
-        fragmentList.add(PictureFragment.newInstance());
-        fragmentList.add(PictureFragment.newInstance());
+        fragmentList.add(RxAndReFragment.newInstance());
+        fragmentList.add(RxjavaFragment.newInstance());
         nameList.add("图片");
-        nameList.add("图片");
-        nameList.add("图片");
+        nameList.add("网络请求");
+        nameList.add("RxJava");
     }
 
 
