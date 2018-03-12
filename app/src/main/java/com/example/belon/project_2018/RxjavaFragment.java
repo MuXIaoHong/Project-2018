@@ -3,7 +3,9 @@ package com.example.belon.project_2018;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.belon.project_2018.base.BaseFragment;
@@ -14,13 +16,16 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
@@ -61,8 +66,14 @@ public class RxjavaFragment extends BaseFragment {
     TextView filter;
     @BindView(R.id.zip)
     TextView zip;
-      Context mContext;
-      Disposable cancel;
+    Context mContext;
+    Disposable cancel;
+    @BindView(R.id.concat)
+    TextView concat;
+    @BindView(R.id.retryWhen)
+    TextView retryWhen;
+    Unbinder unbinder;
+
     public static RxjavaFragment newInstance() {
         return new RxjavaFragment();
     }
@@ -76,13 +87,14 @@ public class RxjavaFragment extends BaseFragment {
     protected int getLayoutId() {
         return R.layout.rxjava_fragment;
     }
+
     /**
      * =============创建操作符开始
      * Range操作符发射一个范围内的有序整数序列，你可以指定范围的起始和长度。
      * Timer延时一定时间后发送一个简单的数值。
      */
     @OnClick(R.id.range)
-      void range() {
+    void range() {
         Observable.range(1, 5).subscribe(new Consumer<Integer>() {
             @Override
             public void accept(Integer integer) throws Exception {
@@ -95,7 +107,7 @@ public class RxjavaFragment extends BaseFragment {
      * 每个一秒按初始值+1一直增长下去。
      */
     @OnClick(R.id.interval)
-      void interval() {
+    void interval() {
         Observable.interval(1, 1, TimeUnit.SECONDS).subscribe(new Observer<Long>() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -126,7 +138,7 @@ public class RxjavaFragment extends BaseFragment {
      * just操作符类似，超过三个数自动转换为from
      */
     @OnClick(R.id.form)
-      void form() {
+    void form() {
         ArrayList<Integer> integers = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             integers.add(i);
@@ -163,7 +175,7 @@ public class RxjavaFragment extends BaseFragment {
      * 取消订阅之后和onComplete调用之后上游还是会发送事件，但是下游收不到了。
      */
     @OnClick(R.id.create)
-      void create() {
+    void create() {
         Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override
             public void subscribe(ObservableEmitter<Integer> e) throws Exception {
@@ -216,7 +228,7 @@ public class RxjavaFragment extends BaseFragment {
      * =========创建操作符结束====/
      */
     @OnClick(R.id.defer)
-      void defer() {
+    void defer() {
         Observable<Integer> defer = Observable.defer(new Callable<ObservableSource<Integer>>() {
             @Override
             public ObservableSource<Integer> call() throws Exception {
@@ -282,7 +294,7 @@ public class RxjavaFragment extends BaseFragment {
      * map它的作用就是对上游发送的每一个事件应用一个函数, 使得每一个事件都按照指定的函数去变化
      */
     @OnClick(R.id.map)
-      void map() {
+    void map() {
         Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override
             public void subscribe(ObservableEmitter<Integer> emitter) throws Exception {
@@ -309,7 +321,7 @@ public class RxjavaFragment extends BaseFragment {
      * map将一个事件转换为另一个事件，flatMap将一个事件转换为零或更多事件
      */
     @OnClick(R.id.flatMap)
-      void flatMap() {
+    void flatMap() {
         Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override
             public void subscribe(ObservableEmitter<Integer> emitter) throws Exception {
@@ -338,7 +350,7 @@ public class RxjavaFragment extends BaseFragment {
      * 将上游的事件数据按条件进行分组，向下传递
      */
     @OnClick(R.id.groupBy)
-      void groupBy() {
+    void groupBy() {
 
         Observable.range(0, 10).groupBy(new Function<Integer, Integer>() {
             @Override
@@ -379,7 +391,7 @@ public class RxjavaFragment extends BaseFragment {
      * 工作线程的转换测试，subscribeOn只会指定最上游工作线程一次，在调用不会切换线程，而observeOn每调用一次会切换一次。
      */
     @OnClick(R.id.threadTest)
-      void threadTest() {
+    void threadTest() {
         Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override
             public void subscribe(ObservableEmitter<Integer> e) throws Exception {
@@ -426,7 +438,7 @@ public class RxjavaFragment extends BaseFragment {
      * 过滤操作，筛选符合条件的事件
      */
     @OnClick(R.id.filter)
-      void filter() {
+    void filter() {
         Observable.just(1, 2, 1, 2, 3, 1, 4)
                 .filter(new Predicate<Integer>() {
                     @Override
@@ -447,7 +459,7 @@ public class RxjavaFragment extends BaseFragment {
      * 比如登录时既需要密码正确，又需要验证码正确，当两者都正确的时候返回true，提示登录成功。
      */
     @OnClick(R.id.zip)
-      void zip() {
+    void zip() {
         Observable.zip(Observable.just(1, 2, 3, 4), Observable.just("A", "B", "C", "D"), new BiFunction<Integer, String, String>() {
             @Override
             public String apply(Integer integer, String s) throws Exception {
@@ -461,6 +473,128 @@ public class RxjavaFragment extends BaseFragment {
         });
     }
 
+    /**
+     * 此处有四个操作符：concat,firstElement,toObservable,onErrorReturn.
+     * 将多个Observable按顺序执行,（出现异常时）调用onError之后会停止之后的事件进行
+     * 结合firstElement和toObservable操作符可以实现完成第一个事件就不会继续往下进行了，可以用于三级缓存
+     * onErrorReturn操作符重新设置onError的时候的返回值，之前的作废
+     */
+    @OnClick(R.id.concat)
+    void concat() {
+        Observable<String> observable = Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
+                if (!e.isDisposed()) {
+                    for (int i = 0; i < 3; i++) {
+                        if (i < 1) {
+                            e.onNext(i+"");
+                        } else if (i==1){
+                            try {
+                                throw  new NumberFormatException();
+                            }catch (Exception error)
+                            {
+                                e.onError(error);
+                            }
+                        }else{
+                            e.onNext(i+"");
+                        }
+                    }
+                    e.onComplete();
+                }
+            }
+        });
+        Observable.concat(observable,Observable.just("A"))
+//                .onErrorReturn(new Function<Throwable, String>() {
+//                    @Override
+//                    public String apply(@NonNull Throwable throwable) throws Exception {
+//                        return "出错了，智宝宝";
+//                    }
+//                })
+//              .firstElement()
+//              .toObservable()
+              .subscribe(new Observer<String>() {
+                  @Override
+                  public void onSubscribe(@NonNull Disposable d) {
+                  }
 
+                  @Override
+                  public void onNext(@NonNull String s) {
+                      Log.d(TAG, "==========" + s);
+                  }
+
+                  @Override
+                  public void onError(@NonNull Throwable e) {
+                      Log.d(TAG, "==========" + e.toString());
+                  }
+
+                  @Override
+                  public void onComplete() {
+
+                  }
+              });
+    }
+
+    /**
+     *该操作符可以指定出异常时候（onError调用的时候）重新尝试执行事件的时机（重试次数，延迟时间）
+     * 可用于网络的请求失败的重新请求
+     * 以下为简单实现，正式使用的时候要将Function单独封装一个，并将属性封装进去。
+     */
+    @OnClick(R.id.retryWhen)
+    void retryWhen() {
+        final int[] i = {0};
+        final int[] retryCount = {0};
+        Observable.create(new ObservableOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<Integer> e) throws Exception {
+                Log.d(TAG, "==========" + "重试"+i[0]++);
+                try {
+                    throw  new NumberFormatException();
+                }catch (Exception error)
+                {
+                    e.onError(error);
+                }
+            }
+        }).retryWhen(new Function<Observable<Throwable>, ObservableSource<?>>() {
+            @Override
+            public ObservableSource<?> apply(@NonNull Observable<Throwable> throwableObservable) throws Exception {
+                return throwableObservable.flatMap(new Function<Throwable, ObservableSource<?>>() {
+                    @Override
+                    public ObservableSource<?> apply(@NonNull Throwable throwable) throws Exception {
+                        if (++retryCount[0] <= 3) {
+                            // When this Observable calls onNext, the original Observable will be retried (i.e. re-subscribed).
+                            return Observable.timer(1000,
+                                    TimeUnit.MILLISECONDS);
+                        }
+                        // Max retries hit. Just pass the error along.
+                        return Observable.error(throwable);
+                    }
+                });
+            }
+        }).subscribe(new Consumer<Integer>() {
+            @Override
+            public void accept(Integer integer) throws Exception {
+            }
+
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+
+            }
+        });
+
+    }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        unbinder = ButterKnife.bind(this, rootView);
+        return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
 }
 

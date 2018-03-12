@@ -58,4 +58,12 @@
         android:id="@+id/zip"
         style="@style/style_normal"
         android:text="zip"></TextView>
+    <TextView
+        android:id="@+id/concat"
+        style="@style/style_normal"
+        android:text="concat"></TextView>
+    <TextView
+        android:id="@+id/retryWhen"
+        style="@style/style_normal"
+        android:text="retryWhen"></TextView>
 </LinearLayout>

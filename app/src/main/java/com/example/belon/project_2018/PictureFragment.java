@@ -30,7 +30,7 @@ import static android.app.Activity.RESULT_OK;
  */
 
 public class PictureFragment extends BaseFragment {
-    public static final String TAG="PictureFragment";
+    public static final String TAG="BaseFragment";
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 1;
     private static final int SDCARD_PERMISSION_REQUEST_CODE = 2;
     private static final int CAMERA_OPEN_REQUEST_CODE = 3;
