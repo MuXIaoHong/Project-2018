@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.belon.project_2018.base.BaseFragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -73,6 +74,8 @@ public class RxjavaFragment extends BaseFragment {
     @BindView(R.id.retryWhen)
     TextView retryWhen;
     Unbinder unbinder;
+    @BindView(R.id.sample)
+    TextView sample;
 
     public static RxjavaFragment newInstance() {
         return new RxjavaFragment();
@@ -108,7 +111,7 @@ public class RxjavaFragment extends BaseFragment {
      */
     @OnClick(R.id.interval)
     void interval() {
-        Observable.interval(1, 1, TimeUnit.SECONDS).subscribe(new Observer<Long>() {
+        Observable.interval(2, 2, TimeUnit.SECONDS).subscribe(new Observer<Long>() {
             @Override
             public void onSubscribe(Disposable d) {
 
@@ -474,8 +477,8 @@ public class RxjavaFragment extends BaseFragment {
     }
 
     /**
-     * 此处有四个操作符：concat,firstElement,toObservable,onErrorReturn.
-     * 将多个Observable按顺序执行,（出现异常时）调用onError之后会停止之后的事件进行
+     * 此处有五个操作符：concat,firstElement,toObservable,onErrorReturn.
+     * 将多个Observable按顺序执行,（出现异常时）调用onError之后会停止之后的事件进行,但是使用concatDelayError(延迟Error的发送，时间都发送完之后再onError)
      * 结合firstElement和toObservable操作符可以实现完成第一个事件就不会继续往下进行了，可以用于三级缓存
      * onErrorReturn操作符重新设置onError的时候的返回值，之前的作废
      */
@@ -487,55 +490,54 @@ public class RxjavaFragment extends BaseFragment {
                 if (!e.isDisposed()) {
                     for (int i = 0; i < 3; i++) {
                         if (i < 1) {
-                            e.onNext(i+"");
-                        } else if (i==1){
+                            e.onNext(i + "");
+                        } else if (i == 1) {
                             try {
-                                throw  new NumberFormatException();
-                            }catch (Exception error)
-                            {
+                                throw new NumberFormatException();
+                            } catch (Exception error) {
                                 e.onError(error);
                             }
-                        }else{
-                            e.onNext(i+"");
+                        } else {
+                            e.onNext(i + "");
                         }
                     }
                     e.onComplete();
                 }
             }
         });
-        Observable.concat(observable,Observable.just("A"))
-//                .onErrorReturn(new Function<Throwable, String>() {
-//                    @Override
-//                    public String apply(@NonNull Throwable throwable) throws Exception {
-//                        return "出错了，智宝宝";
-//                    }
-//                })
+        Observable.concatDelayError(Arrays.asList(observable, Observable.just("A")))
+                .onErrorReturn(new Function<Throwable, String>() {
+                    @Override
+                    public String apply(@NonNull Throwable throwable) throws Exception {
+                        return "出错了，智宝宝";
+                    }
+                })
 //              .firstElement()
 //              .toObservable()
-              .subscribe(new Observer<String>() {
-                  @Override
-                  public void onSubscribe(@NonNull Disposable d) {
-                  }
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                    }
 
-                  @Override
-                  public void onNext(@NonNull String s) {
-                      Log.d(TAG, "==========" + s);
-                  }
+                    @Override
+                    public void onNext(@NonNull String s) {
+                        Log.d(TAG, "==========" + s);
+                    }
 
-                  @Override
-                  public void onError(@NonNull Throwable e) {
-                      Log.d(TAG, "==========" + e.toString());
-                  }
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        Log.d(TAG, "==========" + e.toString());
+                    }
 
-                  @Override
-                  public void onComplete() {
+                    @Override
+                    public void onComplete() {
 
-                  }
-              });
+                    }
+                });
     }
 
     /**
-     *该操作符可以指定出异常时候（onError调用的时候）重新尝试执行事件的时机（重试次数，延迟时间）
+     * 该操作符可以指定出异常时候（onError调用的时候）重新尝试执行事件的时机（重试次数，延迟时间）
      * 可用于网络的请求失败的重新请求
      * 以下为简单实现，正式使用的时候要将Function单独封装一个，并将属性封装进去。
      */
@@ -546,11 +548,10 @@ public class RxjavaFragment extends BaseFragment {
         Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override
             public void subscribe(@NonNull ObservableEmitter<Integer> e) throws Exception {
-                Log.d(TAG, "==========" + "重试"+i[0]++);
+                Log.d(TAG, "==========" + "重试" + i[0]++);
                 try {
-                    throw  new NumberFormatException();
-                }catch (Exception error)
-                {
+                    throw new NumberFormatException();
+                } catch (Exception error) {
                     e.onError(error);
                 }
             }
@@ -583,6 +584,37 @@ public class RxjavaFragment extends BaseFragment {
         });
 
     }
+
+
+    /**
+     * 定期采样操作符，可用于进度的展示，没隔一秒展示一次当前进度
+     */
+    @OnClick(R.id.sample)
+    void sample(){
+        Observable.interval(300, TimeUnit.MILLISECONDS).sample(1, TimeUnit.SECONDS).subscribe(new Observer<Long>() {
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Long aLong) {
+                Log.d(TAG, "==========" + aLong);
+            }
+        });
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // TODO: inflate a fragment view

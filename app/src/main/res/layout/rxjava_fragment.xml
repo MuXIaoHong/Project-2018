@@ -66,4 +66,8 @@
         android:id="@+id/retryWhen"
         style="@style/style_normal"
         android:text="retryWhen"></TextView>
+    <TextView
+        android:id="@+id/sample"
+        style="@style/style_normal"
+        android:text="sample"></TextView>
 </LinearLayout>
