@@ -19,6 +19,11 @@ public class MyApplication extends Application {
         super.onCreate();
         initLog();
         initNet();
+        initCatchExecpect();
+    }
+
+    private void initCatchExecpect() {
+        Thread.setDefaultUncaughtExceptionHandler(new CrashLogHandler());
     }
 
     private void initLog() {
