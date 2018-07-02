@@ -43,13 +43,24 @@ public class MainActivity extends AppActivity {
 
     private void initData() {
         fragmentList.add(PictureFragment.newInstance());
-        fragmentList.add(RxAndReFragment.newInstance());
         fragmentList.add(RxjavaFragment.newInstance());
+        fragmentList.add(ThreadCatchFragment.newInstance());
+        fragmentList.add(ThreadCatchFragment.newInstance());
         nameList.add("图片");
         nameList.add("网络请求");
         nameList.add("RxJava");
+        nameList.add("线程异常捕获");
+        nameList.add("线程异常捕获");
+
+
+
+
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+    }
 
     @Override
     protected int getContentViewId() {
