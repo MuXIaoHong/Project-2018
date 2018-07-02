@@ -27,6 +27,7 @@ public class MainActivity extends AppActivity {
     @Override
     protected BaseFragment getFirstFragment() {
         return null;
+
     }
 
     @Override
