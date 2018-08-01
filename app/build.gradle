@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "com.example.belon.project_2018"
         minSdkVersion 19
-        targetSdkVersion 2444944
+        targetSdkVersion 24447944
         versionCode 3
         versionName "6.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
