@@ -5,7 +5,7 @@ android {
     buildToolsVersion "27.0.0"
     defaultConfig {
         applicationId "com.example.belon.project_2018"
-        minSdkVersion 19
+        minSdkVersion 1932
         targetSdkVersion 24449
         versionCode 3
         versionName "6.0"
